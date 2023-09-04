@@ -4,39 +4,58 @@ from copy import copy
 
 pygame.init()
 
-win = pygame.display.set_mode((800, 600))
+# Увеличиваем размер экрана
+WIN_WIDTH = int(800 * 1.2)
+WIN_HEIGHT = int(600 * 1.2)
 
-body = pygame.image.load('body.svg').convert_alpha()
+win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+
+SCALE_FACTOR = 1.2
+
+# Увеличиваем размер изображений
+body = pygame.transform.scale(pygame.image.load('body.svg').convert_alpha(), 
+                              (int(pygame.image.load('body.svg').get_width() * SCALE_FACTOR),
+                               int(pygame.image.load('body.svg').get_height() * SCALE_FACTOR)))
+boom = pygame.transform.scale(pygame.image.load('boom.svg').convert(), 
+                              (int(pygame.image.load('boom.svg').get_width() * SCALE_FACTOR),
+                               int(pygame.image.load('boom.svg').get_height() * SCALE_FACTOR)))
+arm = pygame.transform.scale(pygame.image.load('arm.svg').convert(), 
+                             (int(pygame.image.load('arm.svg').get_width() * SCALE_FACTOR),
+                              int(pygame.image.load('arm.svg').get_height() * SCALE_FACTOR)))
+bucket = pygame.transform.scale(pygame.image.load('bucket.svg').convert(), 
+                               (int(pygame.image.load('bucket.svg').get_width() * SCALE_FACTOR),
+                                int(pygame.image.load('bucket.svg').get_height() * SCALE_FACTOR)))
+
 body.set_colorkey((255, 255, 255))
-boom = pygame.image.load('boom.svg').convert()
 boom.set_colorkey((255, 255, 255))
-arm = pygame.image.load('arm.svg').convert()
 arm.set_colorkey((255, 255, 255))
-bucket = pygame.image.load('bucket.svg').convert()
 bucket.set_colorkey((255, 255, 255))
 
+# Увеличиваем координаты начального положения
+fang_initial = (int(146 * SCALE_FACTOR), int(34 * SCALE_FACTOR))
+boom_anchor_img = (int(238 * SCALE_FACTOR), int(130 * SCALE_FACTOR))
+bucket_position = [int(114 * SCALE_FACTOR), int(26 * SCALE_FACTOR)]
+boom_anchor = (int(378 * SCALE_FACTOR), int(367 * SCALE_FACTOR))
+arm_anchor_img = (int(149 * SCALE_FACTOR), int(73 * SCALE_FACTOR))
+arm_pivot = (int(280 * SCALE_FACTOR), int(154 * SCALE_FACTOR))
+bucket_pivot = (int(164 * SCALE_FACTOR), int(92 * SCALE_FACTOR))
+body_x = int(300 * SCALE_FACTOR)
+body_y = int(300 * SCALE_FACTOR)
 
-fang_initial = (146, 34)
-boom_anchor_img = (238, 130)
-bucket_position = [114, 26]
-boom_anchor  = (378, 367)
-arm_anchor_img = (149, 73)
-arm_pivot = (280, 154)
-bucket_pivot = (164, 92)
+# ... (остальная часть кода остается прежней)
+
+
+prev_body_x = body_x
+prev_body_y = body_y
 bucket_angle = 0
 arm_angle = 0
 boom_angle = 0
-body_x = 300
-body_y = 300
-prev_body_x = body_x
-prev_body_y = body_y
-
 pygame.font.init()
 font = pygame.font.SysFont(None, 36)  # Выберите шрифт и размер на свой вкус
 
-slider_bucket = [0, 440, 800]  # x, y, длина
-slider_arm = [0, 560, 800]
-slider_boom = [0, 500, 800]
+slider_bucket = [0, 660, 960]  # x, y, длина
+slider_arm = [0, 530, 960]
+slider_boom = [0, 590, 960]
 
 # Определите начальные скорости (конечные значения будут зависеть от положения ползунка)
 speed_bucket = 0
@@ -65,22 +84,7 @@ while run:
     pygame.draw.rect(win, (0, 0, 255), (slider_bucket[0], slider_bucket[1], slider_bucket[2], 20))
     pygame.draw.rect(win, (0, 255, 0), (slider_arm[0], slider_arm[1], slider_arm[2], 20))
     pygame.draw.rect(win, (255, 0, 0), (slider_boom[0], slider_boom[1], slider_boom[2], 20))
-    '''
-    if keys[pygame.K_a] and bucket_angle < 180:
-        bucket_angle += 1
-    if keys[pygame.K_d] and bucket_angle > 0:
-        bucket_angle -= 1
 
-    if keys[pygame.K_w] and arm_angle < 90:
-        arm_angle += 1
-    if keys[pygame.K_s] and arm_angle > 0:
-        arm_angle -= 1
-
-    if keys[pygame.K_LEFT] and boom_angle < 112:
-        boom_angle += 1
-    if keys[pygame.K_RIGHT] and boom_angle > 0:
-        boom_angle -= 1
-    '''
     # Управление скоростью
     keys = pygame.key.get_pressed()
 
@@ -183,7 +187,7 @@ while run:
     pygame.draw.rect(win, (0, 0, 255), (slider_bucket[0], slider_bucket[1], slider_bucket[2], 20))
     pygame.draw.rect(win, (0, 255, 0), (slider_arm[0], slider_arm[1], slider_arm[2], 20))
     pygame.draw.rect(win, (255, 0, 0), (slider_boom[0], slider_boom[1], slider_boom[2], 20))
-    screen_width = 800  # Примерное значение. Укажите реальную ширину вашего экрана
+    screen_width = 960  # Примерное значение. Укажите реальную ширину вашего экрана
     win.blit(bucket_text, (screen_width - bucket_text.get_width() - 10, 10))
     win.blit(arm_text, (screen_width - arm_text.get_width() - 10, 50))
     win.blit(boom_text, (screen_width - boom_text.get_width() - 10, 90))
