@@ -42,9 +42,6 @@ bucket_pivot = (int(164 * SCALE_FACTOR), int(92 * SCALE_FACTOR))
 body_x = int(300 * SCALE_FACTOR)
 body_y = int(300 * SCALE_FACTOR)
 
-# ... (остальная часть кода остается прежней)
-
-
 prev_body_x = body_x
 prev_body_y = body_y
 bucket_angle = 0
@@ -96,7 +93,7 @@ while run:
     just_pressed_s = keys[pygame.K_s] and not prev_keys[pygame.K_s]
     
     if keys[pygame.K_a]:
-        body_x -= 0.3  # измените значение для управления скоростью движения
+        body_x -= 0.3  
     if keys[pygame.K_d]:
         body_x += 0.3
     delta_x = body_x - prev_body_x
@@ -108,6 +105,7 @@ while run:
 
     prev_body_x = body_x
     prev_body_y = body_y
+  
     # Управление скоростью для ковша
     if just_pressed_RIGHT:
         if speed_bucket > 0:
@@ -187,10 +185,10 @@ while run:
     pygame.draw.rect(win, (0, 0, 255), (slider_bucket[0], slider_bucket[1], slider_bucket[2], 20))
     pygame.draw.rect(win, (0, 255, 0), (slider_arm[0], slider_arm[1], slider_arm[2], 20))
     pygame.draw.rect(win, (255, 0, 0), (slider_boom[0], slider_boom[1], slider_boom[2], 20))
-    screen_width = 960  # Примерное значение. Укажите реальную ширину вашего экрана
-    win.blit(bucket_text, (screen_width - bucket_text.get_width() - 10, 10))
-    win.blit(arm_text, (screen_width - arm_text.get_width() - 10, 50))
-    win.blit(boom_text, (screen_width - boom_text.get_width() - 10, 90))
+
+    win.blit(bucket_text, (WIN_WIDTH - bucket_text.get_width() - 10, 10))
+    win.blit(arm_text, (WIN_WIDTH - arm_text.get_width() - 10, 50))
+    win.blit(boom_text, (WIN_WIDTH - boom_text.get_width() - 10, 90))
 
         #####################
     #####################
