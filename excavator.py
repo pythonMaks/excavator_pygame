@@ -5,8 +5,8 @@ from copy import copy
 pygame.init()
 
 # Увеличиваем размер экрана
-WIN_WIDTH = int(800 * 1.2)
-WIN_HEIGHT = int(600 * 1.2)
+WIN_WIDTH = int(1000 * 1.2)
+WIN_HEIGHT = int(800 * 1.2)
 
 win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 
@@ -25,22 +25,28 @@ arm = pygame.transform.scale(pygame.image.load('arm.svg').convert(),
 bucket = pygame.transform.scale(pygame.image.load('bucket.svg').convert(), 
                                (int(pygame.image.load('bucket.svg').get_width() * SCALE_FACTOR),
                                 int(pygame.image.load('bucket.svg').get_height() * SCALE_FACTOR)))
+big_bucket = pygame.image.load('bucket.png').convert()
 
 body.set_colorkey((255, 255, 255))
 boom.set_colorkey((255, 255, 255))
 arm.set_colorkey((255, 255, 255))
 bucket.set_colorkey((255, 255, 255))
+big_bucket.set_colorkey((255, 255, 255))
 
 # Увеличиваем координаты начального положения
 fang_initial = (int(146 * SCALE_FACTOR), int(34 * SCALE_FACTOR))
 boom_anchor_img = (int(238 * SCALE_FACTOR), int(130 * SCALE_FACTOR))
-bucket_position = [int(114 * SCALE_FACTOR), int(26 * SCALE_FACTOR)]
 boom_anchor = (int(378 * SCALE_FACTOR), int(367 * SCALE_FACTOR))
-arm_anchor_img = (int(149 * SCALE_FACTOR), int(73 * SCALE_FACTOR))
-arm_pivot = (int(280 * SCALE_FACTOR), int(154 * SCALE_FACTOR))
-bucket_pivot = (int(164 * SCALE_FACTOR), int(92 * SCALE_FACTOR))
+
+arm_anchor_img = (int(146 * SCALE_FACTOR), int(73 * SCALE_FACTOR))
+arm_pivot = (int(277 * SCALE_FACTOR), int(154 * SCALE_FACTOR))
+bucket_position = [int(111 * SCALE_FACTOR), int(26 * SCALE_FACTOR)]
+bucket_pivot = (int(161 * SCALE_FACTOR), int(92 * SCALE_FACTOR))
 body_x = int(300 * SCALE_FACTOR)
 body_y = int(300 * SCALE_FACTOR)
+
+# ... (остальная часть кода остается прежней)
+
 
 prev_body_x = body_x
 prev_body_y = body_y
@@ -50,15 +56,15 @@ boom_angle = 0
 pygame.font.init()
 font = pygame.font.SysFont(None, 36)  # Выберите шрифт и размер на свой вкус
 
-slider_bucket = [0, 660, 960]  # x, y, длина
-slider_arm = [0, 530, 960]
-slider_boom = [0, 590, 960]
+slider_bucket = [0, 660, 1200]  # x, y, длина
+slider_arm = [0, 530, 1200]
+slider_boom = [0, 590, 1200]
 
 # Определите начальные скорости (конечные значения будут зависеть от положения ползунка)
 speed_bucket = 0
 speed_arm = 0
 speed_boom = 0
-
+scale_factor = 1
 
 def blitRotateCenter(win, image, top_left, angle, pivot):
     rotated_image = pygame.transform.rotate(image, angle)
@@ -66,8 +72,27 @@ def blitRotateCenter(win, image, top_left, angle, pivot):
     win.blit(rotated_image, rect.topleft)
     return rect
 
+def rotate_point_around_point(px, py, cx, cy, angle):
+    s = math.sin(math.radians(angle))
+    c = math.cos(math.radians(angle))
+
+    # Перемещение точки в начало координат
+    px -= cx
+    py -= cy
+
+    # Примените поворот
+    x_new = px * c - py * s
+    y_new = px * s + py * c
+
+    # Верните точку обратно
+    x_new += cx
+    y_new += cy
+
+    return x_new, y_new
+
 run = True
 prev_keys = pygame.key.get_pressed()
+body_rotation_angle = 0
 
 while run:
     for event in pygame.event.get():
@@ -81,7 +106,6 @@ while run:
     pygame.draw.rect(win, (0, 0, 255), (slider_bucket[0], slider_bucket[1], slider_bucket[2], 20))
     pygame.draw.rect(win, (0, 255, 0), (slider_arm[0], slider_arm[1], slider_arm[2], 20))
     pygame.draw.rect(win, (255, 0, 0), (slider_boom[0], slider_boom[1], slider_boom[2], 20))
-
     # Управление скоростью
     keys = pygame.key.get_pressed()
 
@@ -156,6 +180,7 @@ while run:
     bucket_angle += speed_bucket
     arm_angle += speed_arm
     boom_angle += speed_boom
+    
 
     # Ограничения углов
     if not (0 <= bucket_angle <= 180):
@@ -176,21 +201,20 @@ while run:
 
     
     win.fill((255, 255, 255))
-    bucket_text = font.render('Угол ковша: {:.2f}'.format(bucket_angle), True, (0, 0, 0))
-    arm_text = font.render('Угол рукояти: {:.2f}'.format(arm_angle), True, (0, 0, 0))
-    boom_text = font.render('Угол стрелы: {:.2f}'.format(boom_angle), True, (0, 0, 0))
+    # bucket_text = font.render('Угол ковша: {:.2f}'.format(bucket_angle), True, (0, 0, 0))
+    # arm_text = font.render('Угол рукояти: {:.2f}'.format(arm_angle), True, (0, 0, 0))
+    # boom_text = font.render('Угол стрелы: {:.2f}'.format(boom_angle), True, (0, 0, 0))
     
 
     win.blit(body, (body_x, body_y))
     pygame.draw.rect(win, (0, 0, 255), (slider_bucket[0], slider_bucket[1], slider_bucket[2], 20))
     pygame.draw.rect(win, (0, 255, 0), (slider_arm[0], slider_arm[1], slider_arm[2], 20))
-    pygame.draw.rect(win, (255, 0, 0), (slider_boom[0], slider_boom[1], slider_boom[2], 20))
+    pygame.draw.rect(win, (255, 0, 0), (slider_boom[0], slider_boom[1], slider_boom[2], 20))   
+    # win.blit(bucket_text, (WIN_WIDTH - bucket_text.get_width() - 10, 10))
+    # win.blit(arm_text, (WIN_WIDTH - arm_text.get_width() - 10, 50))
+    # win.blit(boom_text, (WIN_WIDTH - boom_text.get_width() - 10, 90))
 
-    win.blit(bucket_text, (WIN_WIDTH - bucket_text.get_width() - 10, 10))
-    win.blit(arm_text, (WIN_WIDTH - arm_text.get_width() - 10, 50))
-    win.blit(boom_text, (WIN_WIDTH - boom_text.get_width() - 10, 90))
-
-        #####################
+    ######################
     #####################
     #####################
     # Поворачиваем стрелу
@@ -215,6 +239,7 @@ while run:
     fang_y = new_bucket_pivot_y + (fang_initial[0] - bucket_position[0]) * math.sin(math.radians(boom_angle + arm_angle + bucket_angle)) + (fang_initial[1] - bucket_position[1]) * math.cos(math.radians(boom_angle + arm_angle + bucket_angle))
     # Поворачиваем ковш вокруг новой опорной точки
     blitRotateCenter(win, bucket, (new_bucket_pivot_x - bucket_position[0], new_bucket_pivot_y - bucket_position[1]), boom_angle + arm_angle + bucket_angle, (new_bucket_pivot_x, new_bucket_pivot_y))
+    blitRotateCenter(win, big_bucket, (890, 350), boom_angle + arm_angle + bucket_angle, (890, 350))
     #####################
     #####################
     #####################
@@ -227,10 +252,10 @@ while run:
 
     arm_angle_from_horizontal = math.degrees(math.atan2(arm_delta_y, -arm_delta_x))
 
-    arm_text_from_horizontal = font.render('Угол рукояти отн. горизонта: {:.2f}'.format(arm_angle_from_horizontal), True, (0, 0, 0))
-    bucket_text_from_horizontal = font.render('Угол ковша отн. горизонта: {:.2f}'.format(bucket_angle_from_horizontal), True, (0, 0, 0))
-    win.blit(arm_text_from_horizontal, (10, 10))
-    win.blit(bucket_text_from_horizontal, (10, 35))
+    # arm_text_from_horizontal = font.render('Угол рукояти отн. горизонта: {:.2f}'.format(arm_angle_from_horizontal), True, (0, 0, 0))
+    # bucket_text_from_horizontal = font.render('Угол ковша отн. горизонта: {:.2f}'.format(bucket_angle_from_horizontal), True, (0, 0, 0))
+    # win.blit(arm_text_from_horizontal, (10, 10))
+    # win.blit(bucket_text_from_horizontal, (10, 35))
 
     prev_keys = copy(keys)
     pygame.display.update()
