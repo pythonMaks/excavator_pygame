@@ -209,13 +209,12 @@ while run:
     win.blit(body, (body_x, body_y))
     pygame.draw.rect(win, (0, 0, 255), (slider_bucket[0], slider_bucket[1], slider_bucket[2], 20))
     pygame.draw.rect(win, (0, 255, 0), (slider_arm[0], slider_arm[1], slider_arm[2], 20))
-    pygame.draw.rect(win, (255, 0, 0), (slider_boom[0], slider_boom[1], slider_boom[2], 20))
-    screen_width = 960  # Примерное значение. Укажите реальную ширину вашего экрана
-    # win.blit(bucket_text, (screen_width - bucket_text.get_width() - 10, 10))
-    # win.blit(arm_text, (screen_width - arm_text.get_width() - 10, 50))
-    # win.blit(boom_text, (screen_width - boom_text.get_width() - 10, 90))
+    pygame.draw.rect(win, (255, 0, 0), (slider_boom[0], slider_boom[1], slider_boom[2], 20))   
+    # win.blit(bucket_text, (WIN_WIDTH - bucket_text.get_width() - 10, 10))
+    # win.blit(arm_text, (WIN_WIDTH - arm_text.get_width() - 10, 50))
+    # win.blit(boom_text, (WIN_WIDTH - boom_text.get_width() - 10, 90))
 
-    #     #####################
+    ######################
     #####################
     #####################
     # Поворачиваем стрелу
